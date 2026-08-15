@@ -1,0 +1,7 @@
+langchain
+langgraph
+langsmith
+mcp
+yfinance
+pydantic
+python-dotenv
