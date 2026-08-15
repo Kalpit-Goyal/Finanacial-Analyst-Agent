@@ -5,3 +5,4 @@ mcp
 yfinance
 pydantic
 python-dotenv
+langchain-openai
