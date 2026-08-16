@@ -48,12 +48,15 @@ function ChatWindow({ company }) {
 
       const data = await response.json();
 
-      // Display analyst's response
+      // Get the final assistant message from LangGraph state
+      const finalMessage =
+        data.messages[data.messages.length - 1];
+
       setMessages((previous) => [
         ...previous,
         {
           role: "assistant",
-          content: data.report,
+          content: finalMessage.content,
         },
       ]);
     } catch (error) {
