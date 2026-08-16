@@ -11,7 +11,6 @@ from analyst import analyst_node
 
 async def create_graph():
 
-    # Connect to MCP server
     client = MultiServerMCPClient(
         {
             "financial": {
@@ -26,7 +25,6 @@ async def create_graph():
 
     graph = StateGraph(AgentState)
 
-    # Nodes
     graph.add_node("get_ticker", get_ticker)
 
     graph.add_node(
@@ -39,19 +37,9 @@ async def create_graph():
         ToolNode(tools)
     )
 
-    # START → ticker lookup
-    graph.add_edge(
-        START,
-        "get_ticker"
-    )
+    graph.add_edge(START, "get_ticker")
+    graph.add_edge("get_ticker", "analyst")
 
-    # ticker → analyst
-    graph.add_edge(
-        "get_ticker",
-        "analyst"
-    )
-
-    # Analyst decides whether a tool is needed
     graph.add_conditional_edges(
         "analyst",
         tools_condition,
@@ -61,10 +49,6 @@ async def create_graph():
         },
     )
 
-    # Tool result → analyst
-    graph.add_edge(
-        "tools",
-        "analyst"
-    )
+    graph.add_edge("tools", "analyst")
 
     return graph.compile()

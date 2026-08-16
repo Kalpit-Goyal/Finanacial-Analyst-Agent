@@ -5,11 +5,8 @@ from pydantic import BaseModel
 from graph import create_graph
 
 
-app = FastAPI()
+app = FastAPI(title="Financial Analyst Agent")
 
-
-# Allow the React development server to communicate
-# with the FastAPI backend.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -19,13 +16,18 @@ app.add_middleware(
 )
 
 
-class ChatRequest(BaseModel):
+class AnalysisRequest(BaseModel):
     company: str
-    message: str
+    question: str
 
 
-@app.post("/chat")
-async def chat(request: ChatRequest):
+@app.get("/")
+def health_check():
+    return {"status": "ok"}
+
+
+@app.post("/analyze")
+async def analyze(request: AnalysisRequest):
 
     graph = await create_graph()
 
@@ -35,7 +37,7 @@ async def chat(request: ChatRequest):
         "messages": [
             {
                 "role": "user",
-                "content": request.message,
+                "content": request.question,
             }
         ],
         "financial_data": {},
@@ -43,13 +45,6 @@ async def chat(request: ChatRequest):
         "artifacts": {},
     }
 
-    result = await graph.ainvoke(initial_state)
+    final_state = await graph.ainvoke(initial_state)
 
-    # Get the final assistant message
-    final_message = result["messages"][-1]
-
-    return {
-        "response": final_message.content,
-        "company": result["company"],
-        "ticker": result["ticker"],
-    }
+    return final_state
