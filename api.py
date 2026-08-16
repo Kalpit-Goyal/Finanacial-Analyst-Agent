@@ -5,7 +5,7 @@ from graph import create_graph
 from fastapi.middleware.cors import CORSMiddleware
 
 
-app = FastAPI(title="Financial Analyst Agent")
+app = FastAPI(title="MY-NEW-FINANCIAL-ANALYST-APP-123")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
