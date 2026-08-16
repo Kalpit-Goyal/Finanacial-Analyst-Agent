@@ -47,6 +47,15 @@ async def analyze(request: AnalysisRequest):
         "artifacts": {},
     }
 
-    final_state = await graph.ainvoke(initial_state)
+    final_state = await graph.ainvoke(
+    initial_state,
+    config={
+        "tags": ["financial-analysis"],
+        "metadata": {
+            "company": request.company,
+            "question": request.question,
+        },
+    },
+)
 
     return final_state
